@@ -339,10 +339,10 @@ end
 
 new_C=plot_B(:,index_eta(1)+point1-1:index_eta(1)+point2+10);
 new_B=new_C;
-if L1(1)<=5
+if L1(1)<=3
     step=L1(1)-1;
 else
-    step=5;
+    step=3;
 end
 time_sample=zeros(1,length(L1));
 
