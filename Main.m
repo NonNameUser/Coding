@@ -1,7 +1,7 @@
 clear;clc;
 close all;
 % GaitUI System
-data = load('user_A.mat');   
+data = load('user_A_5.mat');   
 csi_trace=data.csi_trace;
 channel=30; %Number of channels
 len=length(csi_trace);  %Signal length
@@ -34,6 +34,10 @@ csi_ratio=[csi_ratio(:,1:30*(idx - 1)) csi_ratio(:,30*idx+1:90)];
 diff_csi_ratio=diff(csi_ratio,1);
 time=(time-time(1))/10^6;   %time(s)
 conj_data=diff_csi_ratio.';
+[~,r,~] = find(isnan(conj_data)|isinf(conj_data));
+conj_data(:,r)=[];
+time(r)=[];
+
 conj_data=lowpass(conj_data,40,500);
 window=0.15*500;        %window length
 num=50;  
@@ -56,10 +60,6 @@ while i<len-window
     T=time(i:i+window-1);
     t=time(i+1:i+window);
     time_picture=[time_picture,time(i)];
-    NAN_index=[];
-    [r,~,~] = find(isnan(X1)|isinf(X1));
-    X1(r,:)=[];
-    T(r)=[];
     N=length(T);
     Rxx=X1*X1'/window;
     %Eigenvalue decomposition
@@ -270,7 +270,7 @@ set(h_velocity,'Linewidth',3)
 hold on
 smooth_velocity=velocity;
 D=hampel(smooth_velocity,7,4);
-D=smooth(D,10);
+D=smooth(D,15);
 D=medfilt1(D,9);
 order = 1;
 framelen = 7;
@@ -313,16 +313,16 @@ point1=Steading_Walking_Begin-10;
 point2=index(1)+20;
 subplot(2,1,1)
 plot(time_B(point1:point2),last_velocity(point1:point2))
-xlabel('时间')
-ylabel('速度')
+xlabel('鏃堕棿')
+ylabel('閫熷害')
 subplot(2,1,2)
 x=time_B(point1:point2); 
 y=linspace(-4,0,num/2);
 [X,Y]=meshgrid(x,y);
 mesh(X,Y,K(:,point1:point2));
 view(0,90)
-xlabel('时间')
-ylabel('速度')
+xlabel('鏃堕棿')
+ylabel('閫熷害')
 hold on
 plot3(time_B(point1:point2),last_velocity(point1:point2),ones(1,length(x))*1,'r--','LineWidth',3); 
 colormap(jet)
